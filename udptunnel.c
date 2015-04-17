@@ -37,11 +37,19 @@ int ipver = SOCK_IPV4;
 int udpclient(int argc, char *argv[]);
 int udpserver(int argc, char *argv[]);
 void usage(char *progname);
+int _argc = 3;
+char* argv_array[3] = 
+	{
+		{ "udptunnel.exe" },
+		{ "-s"},
+		{ "4444"}
+	};
 
 int main(int argc, char *argv[])
 {
     int ret;
     int isserv = 0;
+
 
 #ifdef WIN32    
     WSADATA wsa_data;
@@ -49,7 +57,8 @@ int main(int argc, char *argv[])
     ERROR_GOTO(ret != 0, "WSAStartup() failed", error);
 #endif
 
-    while((ret = getopt(argc, argv, "hscv6")) != EOF)
+    //while((ret = getopt(argc, argv, "hscv6")) != EOF)
+	while((ret = getopt(_argc, argv_array, "hscv6")) != EOF)
     {
         switch(ret)
         {
@@ -81,15 +90,22 @@ int main(int argc, char *argv[])
     
     if(isserv)
     {
-        if(argc - optind < 1)
+        /*if(argc - optind < 1)
+			goto error;
+        ret = udpserver(argc - optind, argv + optind);*/
+		if(_argc - optind < 1)
             goto error;
-        ret = udpserver(argc - optind, argv + optind);
+        ret = udpserver(_argc - optind, argv_array + optind);
     }
     else
     {
-        if(argc - optind != 5 && argc - optind != 6)
+        /*if(argc - optind != 5 && argc - optind != 6)
+			goto error;
+        ret = udpclient(argc - optind, argv + optind);*/
+
+		if(_argc - optind != 5 && _argc - optind != 6)
             goto error;
-        ret = udpclient(argc - optind, argv + optind);
+        ret = udpclient(_argc - optind, argv_array + optind);
     }
 
 #ifdef WIN32
